@@ -5,10 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Models\User;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
+    public function __construct(
+        private readonly UserRepositoryInterface $userRepository
+    ){
+    }
+
     public function show(User $user): JsonResponse
     {
         return response()->json([
@@ -20,9 +26,7 @@ class UserController extends Controller
     public function create(UserStoreRequest $request): JsonResponse
     {
         $data = $request->validated();
-        User::firstOrCreate([
-            'email' => $data['email'],
-        ], $data);
+        $this->userRepository->create($data);
 
         return response()->json([
             'status' => 'success',
@@ -33,7 +37,7 @@ class UserController extends Controller
     public function update(User $user, UserUpdateRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $user->update($data);
+        $this->userRepository->update($user, $data);
 
         return response()->json([
             'status' => 'success',
@@ -43,7 +47,7 @@ class UserController extends Controller
 
     public function delete(User $user): JsonResponse
     {
-        $user->update(['deleted_at' => now()]);
+        $this->userRepository->delete($user);
 
         return response()->json([
             'status' => 'success',
