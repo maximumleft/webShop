@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Product;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserStoreRequest extends FormRequest
+class ProductStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,13 +22,9 @@ class UserStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|confirmed',
-            'phone' => 'nullable|string',
-            'avatar' => 'nullable|string',
-            'age' => 'nullable|integer',
-            'male' => 'nullable|string',
+            'title' => 'required|string',
+            'description' => 'required|string',
+            'price' => 'required|integer',
         ];
     }
 
@@ -36,7 +32,7 @@ class UserStoreRequest extends FormRequest
     {
         return [
             '*.required' => 'error',
-            'email.unique' => 'This email is already registered on the site',
+            'description.required' => 'Description is required field',
         ];
     }
 }
